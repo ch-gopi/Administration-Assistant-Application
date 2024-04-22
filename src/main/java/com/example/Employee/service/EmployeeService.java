@@ -1,6 +1,8 @@
 package com.example.Employee.service;
 
 import com.example.Employee.Entity.Employee;
+import com.example.Employee.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,19 +19,27 @@ public class EmployeeService {
             new Employee(2,"Muneer","HYDERABAD")
 
     ));
+    @Autowired
+    EmployeeRepository employeeRepository;
+
 
     public  List<Employee> getAllEmployees()
     {
-        return  employeeList;
+
+        //return  employeeList;
+        return  employeeRepository.findAll();
     }
     public Employee getAnEmployee(int id){
-        return  employeeList.stream().filter(e -> (e.getEmployeeId()== id)).findFirst().get();
+        //return  employeeList.stream().filter(e -> (e.getEmployeeId()== id)).findFirst().get();
+        return  employeeRepository.findById(id).orElseThrow(()->new RuntimeException("not found"));
     }
     public  void createEmployee(Employee employee){
-        employeeList.add(employee);
+      //  employeeList.add(employee);
+        employeeRepository.save(employee);
     }
+
     public void updateEmployee(Employee employee){
-        List<Employee> tempEmployee = new ArrayList<>();
+      /*  List<Employee> tempEmployee = new ArrayList<>();
         for(Employee emp:employeeList){
             if (emp.getEmployeeId()==employee.getEmployeeId()){
                 emp.setEmployeeName(employee.getEmployeeName());
@@ -37,16 +47,19 @@ public class EmployeeService {
             }
             tempEmployee.add(emp);
         }
-        this.employeeList=tempEmployee;
+        this.employeeList=tempEmployee;*/
+        employeeRepository.save(employee);
 
     }
+
     public void deleteEmployee(int id){
-        ArrayList <Employee> tempEmployee  = new ArrayList<>();
+       /* ArrayList <Employee> tempEmployee  = new ArrayList<>();
         for(Employee emp:employeeList) {
             if (emp.getEmployeeId() == id)
                 continue;
             tempEmployee.add(emp);
         }
-            this.employeeList=tempEmployee;
+            this.employeeList=tempEmployee;*/
+        employeeRepository.delete(employeeRepository.getById(id));
     }
 }
